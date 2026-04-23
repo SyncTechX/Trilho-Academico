@@ -9,3 +9,6 @@ backend/ai-search-backend/.env
 public/reel.mp4
 dist/
 node_modules/
+backend/uploads/
+*.mp3
+*.mp4

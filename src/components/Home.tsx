@@ -9,7 +9,6 @@ import {
   Users,
   Newspaper,
   ArrowRight,
-  ArrowLeft,
   Sparkles,
   Rocket,
   MapPin,
@@ -20,7 +19,6 @@ import {
   Star,
   CalendarDays,
   GraduationCap,
-  Quote,
   CheckCircle2,
   Building2,
   BadgeHelp,
@@ -28,8 +26,6 @@ import {
 } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
 import { Link } from "react-router-dom";
 
 interface HomeProps {
@@ -64,7 +60,6 @@ type TeamMember = {
   name: string;
   role: string;
   img: string;
-  quote: string;
 };
 
 type Association = {
@@ -79,7 +74,6 @@ type Partner = {
 };
 
 const Home: React.FC<HomeProps> = () => {
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [featuredScholarships, setFeaturedScholarships] = useState<Scholarship[]>([]);
   const [loadingScholarships, setLoadingScholarships] = useState(true);
   const [flippedFeature, setFlippedFeature] = useState<string | null>(null);
@@ -257,31 +251,26 @@ const Home: React.FC<HomeProps> = () => {
       name: "Bionda Shirley",
       role: "Bionda@trilhoacademico.edu.mz",
       img: "/team/bionda.jpeg",
-      quote: "Transformar ideias em impacto real.",
     },
     {
       name: "Henzel Tibana",
       role: "Henzel@trilhoacademico.edu.mz",
       img: "/henzel.jpg",
-      quote: "Inovação é o futuro.",
     },
     {
       name: "Mauro Chemane",
       role: "Mauro@trilhoacademico.edu.mz",
       img: "/team/mauro.jpg",
-      quote: "O detalhe faz a diferença.",
     },
     {
       name: "Alicio Lino",
       role: "Alicio@trilhoacademico.edu.mz",
       img: "/team/farley.jpg",
-      quote: "Resolver problemas reais.",
     },
     {
       name: "Nilton Novele",
       role: "Nilton@trilhoacademico.edu.mz",
       img: "/team/nilton.jpeg",
-      quote: "Simplicidade.",
     },
   ];
 
@@ -366,188 +355,144 @@ const Home: React.FC<HomeProps> = () => {
         <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-purple-100/50 blur-3xl dark:bg-purple-500/10" />
       </div>
 
-      {/* Team side panel */}
-      <div
-        className={`fixed top-0 left-0 z-50 flex h-full w-[84vw] max-w-80 flex-col bg-white/92 shadow-2xl backdrop-blur-xl transition-transform duration-500 dark:bg-gray-900/92 ${
-          isPanelOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="border-b border-gray-200/70 p-6 dark:border-white/10">
-          <h3 className="text-center text-lg font-bold text-gray-900 dark:text-white">
-            Elenco Principal
-          </h3>
-          <p className="mt-1 text-center text-sm text-gray-500 dark:text-gray-400">
-            A equipa por trás do Trilho Académico
-          </p>
-        </div>
-
-        <div className="flex-1 space-y-6 overflow-y-auto p-6">
-          {teamMembers.map((member, i) => (
-            <div key={i} className="group text-center">
-              <div className="relative mx-auto h-24 w-24">
-                <img
-                  src={member.img}
-                  alt={member.name}
-                  className="h-24 w-24 rounded-full border-4 border-cyan-500 object-cover shadow-lg transition-all duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 rounded-full bg-cyan-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </div>
-
-              <h4 className="mt-3 font-semibold text-gray-900 dark:text-white">
-                {member.name}
-              </h4>
-              <p className="text-sm text-cyan-700 dark:text-cyan-400">{member.role}</p>
-
-              <div className="mt-2 flex items-start justify-center gap-2 px-3 text-xs italic text-gray-600 dark:text-gray-400">
-                <Quote className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                <span>{member.quote}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button
-        onClick={() => setIsPanelOpen(!isPanelOpen)}
-        className="fixed left-0 top-1/2 z-50 -translate-y-1/2 rounded-r-2xl bg-cyan-600 p-3 text-white shadow-xl transition hover:bg-cyan-700"
-        aria-label="Alternar painel da equipa"
-      >
-        {isPanelOpen ? <ArrowLeft className="h-5 w-5" /> : <ArrowRight className="h-5 w-5" />}
-      </button>
-
       {/* Hero */}
       <section className="relative overflow-hidden bg-white">
-        <div className="mx-auto max-w-7xl px-4 pt-28 pb-16 sm:px-6 lg:px-8 lg:pt-32 lg:pb-24">
-          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="max-w-2xl">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-500/10 dark:text-cyan-300">
-                <Sparkles className="h-4 w-4" />
-                <span>Dinamizar a educação em Moçambique</span>
-              </div>
+  <div className="pointer-events-none absolute inset-0">
+    <div className="absolute left-[-90px] top-0 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl dark:bg-cyan-500/10" />
+    <div className="absolute right-[-90px] top-24 h-80 w-80 rounded-full bg-blue-100/60 blur-3xl dark:bg-blue-500/10" />
+    <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-purple-100/50 blur-3xl dark:bg-purple-500/10" />
+  </div>
 
-              <h1 className="text-4xl font-black leading-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-                O Teu Futuro Académico{" "}
-                <span className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Começa Aqui
-                </span>
-              </h1>
+  <div className="mx-auto max-w-7xl px-4 pt-24 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:px-8 lg:pt-32 lg:pb-24">
+    <div className="grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
+      <div className="relative z-10 max-w-2xl">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-500/10 dark:text-cyan-300">
+          <Sparkles className="h-4 w-4" />
+          <span>Dinamizar a educação em Moçambique</span>
+        </div>
 
-              <p className="mt-6 max-w-xl text-base leading-8 text-gray-600 sm:text-lg dark:text-gray-300">
-                O <span className="font-semibold text-gray-900 dark:text-white">Trilho Académico</span>{" "}
-                ajuda-te a descobrir cursos, universidades, países e bolsas com mais clareza,
-                estratégia e confiança.
+        <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+          O Teu Futuro Académico{" "}
+          <span className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Começa Aqui
+          </span>
+        </h1>
+
+        <p className="mt-6 max-w-xl text-base leading-8 text-gray-600 sm:text-lg dark:text-gray-300">
+          O{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            Trilho Académico
+          </span>{" "}
+          ajuda-te a descobrir cursos, universidades, países e bolsas com mais
+          clareza, estratégia e confiança.
+        </p>
+
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+          <Link to="/escolher-teste">
+            <button className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-blue-500/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+              <Rocket className="h-5 w-5 group-hover:animate-pulse" />
+              <span>Começar agora</span>
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </button>
+          </Link>
+
+          <Link to="/escolher-teste">
+            <button className="rounded-2xl border border-gray-200 bg-white px-8 py-4 text-base font-semibold text-gray-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04] dark:text-white">
+              Fazer Teste Vocacional
+            </button>
+          </Link>
+        </div>
+
+        <div className="mt-10 max-w-2xl">
+          <div className="flex items-start gap-3 rounded-3xl border border-yellow-200 bg-yellow-50 p-4 text-left text-yellow-800 shadow-sm dark:border-yellow-900 dark:bg-yellow-500/10 dark:text-yellow-300">
+            <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-yellow-500" />
+            <div>
+              <h3 className="text-base font-semibold sm:text-lg">
+                Atualização Importante - 1 de Junho
+              </h3>
+              <p className="mt-1 text-sm leading-6">
+                No dia <span className="font-semibold">1 de Junho</span>, lançaremos uma
+                grande atualização na plataforma. Fica atento.
               </p>
-
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Link to="/escolher-teste">
-                  <button className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-blue-500/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                    <Rocket className="h-5 w-5 group-hover:animate-pulse" />
-                    <span>Começar agora</span>
-                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </Link>
-
-                <Link to="/escolher-teste">
-                  <button className="rounded-2xl border border-gray-200 bg-white px-8 py-4 text-base font-semibold text-gray-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04] dark:text-white">
-                    Fazer Teste Vocacional
-                  </button>
-                </Link>
-              </div>
-
-              <div className="mt-10 max-w-2xl">
-                <div className="flex items-start gap-3 rounded-3xl border border-yellow-200 bg-yellow-50 p-4 text-left text-yellow-800 shadow-sm dark:border-yellow-900 dark:bg-yellow-500/10 dark:text-yellow-300">
-                  <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-yellow-500" />
-                  <div>
-                    <h3 className="text-base font-semibold sm:text-lg">
-                      Atualização Importante - 1 de Junho
-                    </h3>
-                    <p className="mt-1 text-sm leading-6">
-                      No dia <span className="font-semibold">1 de Junho</span>, lançaremos uma
-                      grande atualização na plataforma. Fica atento.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Desktop overlapping images */}
-            <div className="relative hidden min-h-[560px] lg:block">
-              <div className="absolute left-6 top-10 w-[44%] overflow-hidden rounded-[2rem] border border-white bg-white p-2 shadow-2xl">
-                <img
-                  src={heroImages[0]}
-                  alt="Estudantes a estudar"
-                  className="h-72 w-full rounded-[1.5rem] object-cover"
-                />
-              </div>
-
-              <div className="absolute right-0 top-0 w-[42%] overflow-hidden rounded-[2rem] border border-white bg-white p-2 shadow-2xl">
-                <img
-                  src={heroImages[1]}
-                  alt="Grupo de estudantes"
-                  className="h-64 w-full rounded-[1.5rem] object-cover"
-                />
-              </div>
-
-              <div className="absolute left-0 bottom-10 w-[40%] overflow-hidden rounded-[2rem] border border-white bg-white p-2 shadow-2xl">
-                <img
-                  src={heroImages[2]}
-                  alt="Biblioteca"
-                  className="h-60 w-full rounded-[1.5rem] object-cover"
-                />
-              </div>
-
-              <div className="absolute right-8 bottom-0 w-[48%] overflow-hidden rounded-[2rem] border border-white bg-white p-2 shadow-2xl">
-                <img
-                  src={heroImages[3]}
-                  alt="Vida académica"
-                  className="h-72 w-full rounded-[1.5rem] object-cover"
-                />
-              </div>
-
-              <div className="absolute left-[24%] top-[32%] rounded-[2rem] border border-cyan-100 bg-white/95 px-5 py-4 shadow-xl backdrop-blur dark:border-white/10 dark:bg-gray-900/90">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                      Trilho Académico
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Clareza, apoio e direção
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile carousel */}
-            <div className="lg:hidden">
-              <Swiper
-                modules={[Pagination, Autoplay]}
-                slidesPerView={1.1}
-                centeredSlides
-                spaceBetween={16}
-                autoplay={{ delay: 3500, disableOnInteraction: false }}
-                pagination={{ clickable: true }}
-                className="pb-10"
-              >
-                {heroImages.map((image, idx) => (
-                  <SwiperSlide key={idx}>
-                    <div className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white p-2 shadow-xl dark:border-white/10 dark:bg-white/[0.04]">
-                      <img
-                        src={image}
-                        alt={`Imagem ${idx + 1}`}
-                        className="h-[320px] w-full rounded-[1.5rem] object-cover"
-                      />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Responsive overlapping image layout for both mobile and desktop */}
+      <div className="relative mx-auto w-full max-w-[620px] lg:max-w-none">
+        <div className="relative h-[420px] sm:h-[500px] lg:h-[560px]">
+          {/* Card 1 */}
+          <div className="absolute left-0 top-10 w-[48%] sm:left-4 sm:w-[44%] lg:left-6 lg:top-10 lg:w-[44%]">
+            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
+              <img
+                src={heroImages[0]}
+                alt="Estudantes a estudar"
+                className="h-44 w-full rounded-[1.15rem] object-cover sm:h-56 lg:h-72"
+              />
+            </div>
+          </div>
+
+          {/* Card 2 */}
+          <div className="absolute right-0 top-0 w-[46%] sm:w-[42%] lg:right-0 lg:top-0 lg:w-[42%]">
+            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
+              <img
+                src={heroImages[1]}
+                alt="Grupo de estudantes"
+                className="h-40 w-full rounded-[1.15rem] object-cover sm:h-52 lg:h-64"
+              />
+            </div>
+          </div>
+
+          {/* Card 3 */}
+          <div className="absolute bottom-14 left-2 w-[42%] sm:bottom-10 sm:left-0 sm:w-[40%] lg:bottom-10 lg:left-0 lg:w-[40%]">
+            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
+              <img
+                src={heroImages[2]}
+                alt="Biblioteca"
+                className="h-36 w-full rounded-[1.15rem] object-cover sm:h-44 lg:h-60"
+              />
+            </div>
+          </div>
+
+          {/* Card 4 */}
+          <div className="absolute bottom-0 right-4 w-[50%] sm:right-6 sm:w-[48%] lg:right-8 lg:bottom-0 lg:w-[48%]">
+            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
+              <img
+                src={heroImages[3]}
+                alt="Vida académica"
+                className="h-44 w-full rounded-[1.15rem] object-cover sm:h-56 lg:h-72"
+              />
+            </div>
+          </div>
+
+          {/* Floating badge */}
+          <div className="absolute left-[18%] top-[36%] sm:left-[24%] sm:top-[34%] lg:left-[24%] lg:top-[32%]">
+            <div className="rounded-[1.5rem] border border-cyan-100 bg-white/95 px-4 py-3 shadow-xl backdrop-blur dark:border-white/10 dark:bg-gray-900/90 sm:px-5 sm:py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white sm:h-12 sm:w-12">
+                  <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-gray-900 dark:text-white sm:text-sm">
+                    Trilho Académico
+                  </p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400 sm:text-xs">
+                    Clareza, apoio e direção
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Soft depth accents */}
+          <div className="absolute -left-6 top-16 h-24 w-24 rounded-full bg-cyan-200/30 blur-2xl dark:bg-cyan-500/10" />
+          <div className="absolute right-6 bottom-8 h-28 w-28 rounded-full bg-blue-200/30 blur-2xl dark:bg-blue-500/10" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Stats */}
       <section className="border-y border-gray-200 bg-white py-16 transition-colors duration-300 dark:border-white/10 dark:bg-gray-900">
@@ -717,11 +662,7 @@ const Home: React.FC<HomeProps> = () => {
                             </div>
 
                             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                              {[
-                                "Mais clareza",
-                                "Mais foco",
-                                "Mais organização",
-                              ].map((item) => (
+                              {["Mais clareza", "Mais foco", "Mais organização"].map((item) => (
                                 <div
                                   key={item}
                                   className="flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
@@ -771,7 +712,7 @@ const Home: React.FC<HomeProps> = () => {
         </div>
       </section>
 
-      {/* Features flip cards */}
+      {/* Features */}
       <section className="bg-gray-50 py-20 transition-colors duration-300 dark:bg-gray-950">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
@@ -795,7 +736,7 @@ const Home: React.FC<HomeProps> = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {features.map((feature, index) => {
+            {features.map((feature) => {
               const Icon = feature.icon;
               const isFlipped = flippedFeature === feature.id;
 
@@ -814,7 +755,6 @@ const Home: React.FC<HomeProps> = () => {
                       transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
                     }}
                   >
-                    {/* Front */}
                     <div
                       className="absolute inset-0 overflow-hidden rounded-[2rem] border border-gray-200 bg-white p-8 shadow-sm transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-2xl dark:border-white/10 dark:bg-white/[0.04]"
                       style={{ backfaceVisibility: "hidden" }}
@@ -853,7 +793,6 @@ const Home: React.FC<HomeProps> = () => {
                       </div>
                     </div>
 
-                    {/* Back */}
                     <div
                       className="absolute inset-0 overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-gray-900"
                       style={{
@@ -939,7 +878,6 @@ const Home: React.FC<HomeProps> = () => {
             </p>
           </div>
 
-          {/* Highlight */}
           <div className="mb-16">
             <div className="rounded-[2rem] bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 p-[1px] shadow-xl">
               <div className="relative rounded-[2rem] bg-white px-6 py-8 text-center dark:bg-gray-950 md:px-10 md:py-10">
@@ -963,7 +901,6 @@ const Home: React.FC<HomeProps> = () => {
             </div>
           </div>
 
-          {/* Associations */}
           <div className="mb-20">
             <div className="mb-8 flex items-center justify-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg">
@@ -1020,7 +957,6 @@ const Home: React.FC<HomeProps> = () => {
             </Swiper>
           </div>
 
-          {/* Partners */}
           <div>
             <div className="mb-8 flex items-center justify-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 text-white shadow-lg">

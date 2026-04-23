@@ -53,64 +53,9 @@ const NotFound: React.FC = () => {
               </button>
             </div>
           </div>
-
-          {/* Right visual */}
-          <div className="order-1 flex justify-center lg:order-2">
-            <div className="relative w-full max-w-md">
-              <div className="rounded-[2rem] border border-gray-200/80 bg-white/80 p-6 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:p-8">
-                <div className="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-slate-900 via-blue-900 to-cyan-700 px-6 py-10 text-white sm:px-8 sm:py-12">
-                  <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-                  <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-cyan-300/20 blur-2xl" />
-
-                  <div className="relative text-center">
-                    <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-white/10 backdrop-blur-md">
-                      <Compass className="h-8 w-8" />
-                    </div>
-
-                    <div className="text-6xl font-black tracking-tight sm:text-7xl">
-                      404
-                    </div>
-
-                    <p className="mt-3 text-sm font-medium text-white/80 sm:text-base">
-                      Caminho indisponível
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-gray-50 p-4 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
-                      Estado
-                    </p>
-                    <p className="mt-2 text-sm font-bold text-gray-900">
-                      Não encontrado
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl bg-gray-50 p-4 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
-                      Sugestão
-                    </p>
-                    <p className="mt-2 text-sm font-bold text-gray-900">
-                      Voltar ao início
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-4 -left-4 hidden rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-lg sm:block">
-                <p className="text-sm font-semibold text-gray-800">
-                  Trilho Académico
-                </p>
-                <p className="text-xs text-gray-500">
-                  Continua a tua navegação
-                </p>
-              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
   );
 };
 

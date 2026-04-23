@@ -23,6 +23,7 @@ export interface KnownCourseData {
   livingPreference: string;
   studyMode: string;
   fundingType: string;
+  desiredCountries: string[];
   visaConcerns: string;
   languages: string[];
   interests: string;
