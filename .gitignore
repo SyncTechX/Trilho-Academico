@@ -1,7 +1,7 @@
 .env.local
 
 # .gitignore
-backend/study-plan/.env
+backend/
 .env
 backend/.env
 backend/ai-search-backend/.env
