@@ -27,6 +27,8 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { Link } from "react-router-dom";
+import "swiper/css";
+import "swiper/css/pagination";
 
 interface HomeProps {
   onNavigate: (page: NavigationPage) => void;
@@ -102,10 +104,10 @@ const Home: React.FC<HomeProps> = () => {
   }, []);
 
   const heroImages = [
-    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=900&q=80",
-    "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=900&q=80",
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+    "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80",
   ];
 
   const features: Feature[] = [
@@ -123,7 +125,7 @@ const Home: React.FC<HomeProps> = () => {
         "Base para decisões académicas mais seguras",
       ],
       image:
-        "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80",
       color: "from-purple-500 to-pink-600",
       badge: "Educação",
     },
@@ -141,7 +143,7 @@ const Home: React.FC<HomeProps> = () => {
         "Escolhas mais alinhadas aos teus objetivos",
       ],
       image:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
       color: "from-cyan-500 to-blue-600",
       badge: "AI",
     },
@@ -159,7 +161,7 @@ const Home: React.FC<HomeProps> = () => {
         "Menos erros no processo",
       ],
       image:
-        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80",
       color: "from-green-500 to-emerald-600",
       badge: "Guias",
     },
@@ -177,7 +179,7 @@ const Home: React.FC<HomeProps> = () => {
         "Maior controlo do orçamento",
       ],
       image:
-        "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1200&q=80",
       color: "from-orange-500 to-red-600",
       badge: "Finanças",
     },
@@ -195,7 +197,7 @@ const Home: React.FC<HomeProps> = () => {
         "Maior confiança antes de partir",
       ],
       image:
-        "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80",
       color: "from-indigo-500 to-purple-600",
       badge: "Rede",
     },
@@ -213,7 +215,7 @@ const Home: React.FC<HomeProps> = () => {
         "Experiência mais simples e segura",
       ],
       image:
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
       color: "from-teal-500 to-cyan-600",
       badge: "Mentoria",
     },
@@ -357,142 +359,135 @@ const Home: React.FC<HomeProps> = () => {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-white">
-  <div className="pointer-events-none absolute inset-0">
-    <div className="absolute left-[-90px] top-0 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl dark:bg-cyan-500/10" />
-    <div className="absolute right-[-90px] top-24 h-80 w-80 rounded-full bg-blue-100/60 blur-3xl dark:bg-blue-500/10" />
-    <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-purple-100/50 blur-3xl dark:bg-purple-500/10" />
-  </div>
-
-  <div className="mx-auto max-w-7xl px-4 pt-24 pb-14 sm:px-6 sm:pt-28 sm:pb-16 lg:px-8 lg:pt-32 lg:pb-24">
-    <div className="grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
-      <div className="relative z-10 max-w-2xl">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-500/10 dark:text-cyan-300">
-          <Sparkles className="h-4 w-4" />
-          <span>Dinamizar a educação em Moçambique</span>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-[-90px] top-0 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl dark:bg-cyan-500/10" />
+          <div className="absolute right-[-90px] top-24 h-80 w-80 rounded-full bg-blue-100/60 blur-3xl dark:bg-blue-500/10" />
+          <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-purple-100/50 blur-3xl dark:bg-purple-500/10" />
         </div>
 
-        <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-          O Teu Futuro Académico{" "}
-          <span className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Começa Aqui
-          </span>
-        </h1>
+        <div className="mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:px-8 lg:pt-32 lg:pb-24">
+          <div className="grid items-center gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
+            <div className="relative z-10 max-w-2xl">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-500/10 dark:text-cyan-300">
+                <Sparkles className="h-4 w-4" />
+                <span>Dinamizar a educação em Moçambique</span>
+              </div>
 
-        <p className="mt-6 max-w-xl text-base leading-8 text-gray-600 sm:text-lg dark:text-gray-300">
-          O{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            Trilho Académico
-          </span>{" "}
-          ajuda-te a descobrir cursos, universidades, países e bolsas com mais
-          clareza, estratégia e confiança.
-        </p>
+              <h1 className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+                O Teu Futuro Académico{" "}
+                <span className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Começa Aqui
+                </span>
+              </h1>
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-          <Link to="/escolher-teste">
-            <button className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-blue-500/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-              <Rocket className="h-5 w-5 group-hover:animate-pulse" />
-              <span>Começar agora</span>
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </button>
-          </Link>
-
-          <Link to="/escolher-teste">
-            <button className="rounded-2xl border border-gray-200 bg-white px-8 py-4 text-base font-semibold text-gray-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04] dark:text-white">
-              Fazer Teste Vocacional
-            </button>
-          </Link>
-        </div>
-
-        <div className="mt-10 max-w-2xl">
-          <div className="flex items-start gap-3 rounded-3xl border border-yellow-200 bg-yellow-50 p-4 text-left text-yellow-800 shadow-sm dark:border-yellow-900 dark:bg-yellow-500/10 dark:text-yellow-300">
-            <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-yellow-500" />
-            <div>
-              <h3 className="text-base font-semibold sm:text-lg">
-                Atualização Importante - 1 de Junho
-              </h3>
-              <p className="mt-1 text-sm leading-6">
-                No dia <span className="font-semibold">1 de Junho</span>, lançaremos uma
-                grande atualização na plataforma. Fica atento.
+              <p className="mt-6 max-w-xl text-base leading-8 text-gray-600 sm:text-lg dark:text-gray-300">
+                O{" "}
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  Trilho Académico
+                </span>{" "}
+                ajuda-te a descobrir cursos, universidades, países e bolsas com mais
+                clareza, estratégia e confiança.
               </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Responsive overlapping image layout for both mobile and desktop */}
-      <div className="relative mx-auto w-full max-w-[620px] lg:max-w-none">
-        <div className="relative h-[420px] sm:h-[500px] lg:h-[560px]">
-          {/* Card 1 */}
-          <div className="absolute left-0 top-10 w-[48%] sm:left-4 sm:w-[44%] lg:left-6 lg:top-10 lg:w-[44%]">
-            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
-              <img
-                src={heroImages[0]}
-                alt="Estudantes a estudar"
-                className="h-44 w-full rounded-[1.15rem] object-cover sm:h-56 lg:h-72"
-              />
-            </div>
-          </div>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <Link to="/escolher-teste">
+                  <button className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-blue-500/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                    <Rocket className="h-5 w-5 group-hover:animate-pulse" />
+                    <span>Começar agora</span>
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </Link>
 
-          {/* Card 2 */}
-          <div className="absolute right-0 top-0 w-[46%] sm:w-[42%] lg:right-0 lg:top-0 lg:w-[42%]">
-            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
-              <img
-                src={heroImages[1]}
-                alt="Grupo de estudantes"
-                className="h-40 w-full rounded-[1.15rem] object-cover sm:h-52 lg:h-64"
-              />
-            </div>
-          </div>
+                <Link to="/escolher-teste">
+                  <button className="rounded-2xl border border-gray-200 bg-white px-8 py-4 text-base font-semibold text-gray-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg dark:border-white/10 dark:bg-white/[0.04] dark:text-white">
+                    Fazer Teste Vocacional
+                  </button>
+                </Link>
+              </div>
 
-          {/* Card 3 */}
-          <div className="absolute bottom-14 left-2 w-[42%] sm:bottom-10 sm:left-0 sm:w-[40%] lg:bottom-10 lg:left-0 lg:w-[40%]">
-            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
-              <img
-                src={heroImages[2]}
-                alt="Biblioteca"
-                className="h-36 w-full rounded-[1.15rem] object-cover sm:h-44 lg:h-60"
-              />
-            </div>
-          </div>
-
-          {/* Card 4 */}
-          <div className="absolute bottom-0 right-4 w-[50%] sm:right-6 sm:w-[48%] lg:right-8 lg:bottom-0 lg:w-[48%]">
-            <div className="overflow-hidden rounded-[1.5rem] border border-white bg-white p-2 shadow-2xl">
-              <img
-                src={heroImages[3]}
-                alt="Vida académica"
-                className="h-44 w-full rounded-[1.15rem] object-cover sm:h-56 lg:h-72"
-              />
-            </div>
-          </div>
-
-          {/* Floating badge */}
-          <div className="absolute left-[18%] top-[36%] sm:left-[24%] sm:top-[34%] lg:left-[24%] lg:top-[32%]">
-            <div className="rounded-[1.5rem] border border-cyan-100 bg-white/95 px-4 py-3 shadow-xl backdrop-blur dark:border-white/10 dark:bg-gray-900/90 sm:px-5 sm:py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white sm:h-12 sm:w-12">
-                  <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-gray-900 dark:text-white sm:text-sm">
-                    Trilho Académico
-                  </p>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400 sm:text-xs">
-                    Clareza, apoio e direção
-                  </p>
+              <div className="mt-10 max-w-2xl">
+                <div className="flex items-start gap-3 rounded-3xl border border-yellow-200 bg-yellow-50 p-4 text-left text-yellow-800 shadow-sm dark:border-yellow-900 dark:bg-yellow-500/10 dark:text-yellow-300">
+                  <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-yellow-500" />
+                  <div>
+                    <h3 className="text-base font-semibold sm:text-lg">
+                      Atualização Importante - 1 de Junho
+                    </h3>
+                    <p className="mt-1 text-sm leading-6">
+                      No dia <span className="font-semibold">1 de Junho</span>, lançaremos uma
+                      grande atualização na plataforma. Fica atento.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Soft depth accents */}
-          <div className="absolute -left-6 top-16 h-24 w-24 rounded-full bg-cyan-200/30 blur-2xl dark:bg-cyan-500/10" />
-          <div className="absolute right-6 bottom-8 h-28 w-28 rounded-full bg-blue-200/30 blur-2xl dark:bg-blue-500/10" />
+            <div className="relative mx-auto w-full max-w-[660px] lg:max-w-none">
+              <div className="relative h-[430px] sm:h-[520px] lg:h-[580px]">
+                <div className="absolute left-0 top-10 w-[48%] sm:left-4 sm:w-[44%] lg:left-6 lg:top-10 lg:w-[44%]">
+                  <div className="overflow-hidden rounded-[1.75rem] border border-white/90 bg-white p-2 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.28)]">
+                    <img
+                      src={heroImages[0]}
+                      alt="Estudantes a estudar"
+                      className="h-44 w-full rounded-[1.3rem] object-cover sm:h-60 lg:h-72"
+                    />
+                  </div>
+                </div>
+
+                <div className="absolute right-0 top-0 w-[46%] sm:w-[42%] lg:right-0 lg:top-0 lg:w-[42%]">
+                  <div className="overflow-hidden rounded-[1.75rem] border border-white/90 bg-white p-2 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.28)]">
+                    <img
+                      src={heroImages[1]}
+                      alt="Grupo de estudantes"
+                      className="h-40 w-full rounded-[1.3rem] object-cover sm:h-56 lg:h-64"
+                    />
+                  </div>
+                </div>
+
+                <div className="absolute bottom-14 left-2 w-[42%] sm:bottom-10 sm:left-0 sm:w-[40%] lg:bottom-10 lg:left-0 lg:w-[40%]">
+                  <div className="overflow-hidden rounded-[1.75rem] border border-white/90 bg-white p-2 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.28)]">
+                    <img
+                      src={heroImages[2]}
+                      alt="Biblioteca"
+                      className="h-36 w-full rounded-[1.3rem] object-cover sm:h-48 lg:h-60"
+                    />
+                  </div>
+                </div>
+
+                <div className="absolute bottom-0 right-4 w-[50%] sm:right-6 sm:w-[48%] lg:right-8 lg:bottom-0 lg:w-[48%]">
+                  <div className="overflow-hidden rounded-[1.75rem] border border-white/90 bg-white p-2 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.28)]">
+                    <img
+                      src={heroImages[3]}
+                      alt="Vida académica"
+                      className="h-44 w-full rounded-[1.3rem] object-cover sm:h-60 lg:h-72"
+                    />
+                  </div>
+                </div>
+
+                <div className="absolute left-[16%] top-[36%] sm:left-[24%] sm:top-[34%] lg:left-[24%] lg:top-[32%]">
+                  <div className="rounded-[1.5rem] border border-cyan-100 bg-white/95 px-4 py-3 shadow-xl backdrop-blur dark:border-white/10 dark:bg-gray-900/90 sm:px-5 sm:py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white sm:h-12 sm:w-12">
+                        <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-900 dark:text-white sm:text-sm">
+                          Trilho Académico
+                        </p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 sm:text-xs">
+                          Clareza, apoio e direção
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute -left-6 top-16 h-24 w-24 rounded-full bg-cyan-200/30 blur-2xl dark:bg-cyan-500/10" />
+                <div className="absolute right-6 bottom-8 h-28 w-28 rounded-full bg-blue-200/30 blur-2xl dark:bg-blue-500/10" />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Stats */}
       <section className="border-y border-gray-200 bg-white py-16 transition-colors duration-300 dark:border-white/10 dark:bg-gray-900">
@@ -585,21 +580,21 @@ const Home: React.FC<HomeProps> = () => {
                 {featuredScholarships.map((scholarship, index) => (
                   <SwiperSlide key={scholarship.id || index}>
                     <div className="overflow-hidden rounded-[2rem] border border-gray-200/70 bg-white shadow-[0_20px_70px_-35px_rgba(0,0,0,0.16)] dark:border-white/10 dark:bg-gray-950/60 dark:shadow-[0_20px_70px_-35px_rgba(0,0,0,0.55)]">
-                      <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
+                      <div className="grid grid-cols-1 lg:grid-cols-[0.88fr_1.12fr]">
                         <div className="relative">
                           {scholarship.image ? (
                             <img
                               src={scholarship.image}
                               alt={scholarship.title || "Bolsa em destaque"}
-                              className="h-[220px] w-full object-cover sm:h-[260px] lg:h-full lg:min-h-[390px]"
+                              className="h-[230px] w-full object-cover sm:h-[280px] lg:h-full lg:min-h-[420px]"
                             />
                           ) : (
-                            <div className="flex h-[220px] w-full items-center justify-center bg-gradient-to-br from-green-100 via-emerald-50 to-cyan-100 sm:h-[260px] lg:min-h-[390px] dark:from-green-500/10 dark:via-emerald-500/5 dark:to-cyan-500/10">
+                            <div className="flex h-[230px] w-full items-center justify-center bg-gradient-to-br from-green-100 via-emerald-50 to-cyan-100 sm:h-[280px] lg:min-h-[420px] dark:from-green-500/10 dark:via-emerald-500/5 dark:to-cyan-500/10">
                               <GraduationCap className="h-14 w-14 text-green-600/60 dark:text-green-400/60" />
                             </div>
                           )}
 
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent lg:bg-gradient-to-r lg:from-black/35 lg:to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent lg:bg-gradient-to-r lg:from-black/35 lg:to-transparent" />
 
                           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
                             <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-gray-900 shadow-md backdrop-blur">
@@ -855,6 +850,8 @@ const Home: React.FC<HomeProps> = () => {
           </div>
         </div>
       </section>
+
+      
 
       {/* Partners and Associations */}
       <section className="relative bg-white py-24 transition-colors duration-300 dark:bg-gray-900">
