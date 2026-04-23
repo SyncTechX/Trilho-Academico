@@ -25,7 +25,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+const API_URL = "http://localhost:5001"; //http://localhost:3000
 
 const AccommodationExplorer: React.FC = () => {
   const [paisSelecionado, setPaisSelecionado] = useState("");
