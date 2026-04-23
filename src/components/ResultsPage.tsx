@@ -1,7 +1,7 @@
 // src/pages/ResultsPage.tsx
 import React, { useEffect, useState } from "react";
 import { useFormData } from "./FormDataContext";
-import StudyPlanCard, { CourseCardData } from "../components/StudyPlanCard";
+// import StudyPlanCard, { CourseCardData } from "../components/StudyPlanCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 

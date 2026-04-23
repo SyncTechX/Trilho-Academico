@@ -175,7 +175,7 @@ function App() {
             </div>
 
             <Navigation />
-
+            
             <main className="relative flex-1">
               <AppRoutes />
             </main>

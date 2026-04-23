@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MapPin,
-  DollarSign,
   Heart,
   ArrowLeft,
   ArrowRight,
@@ -11,7 +10,6 @@ import {
   GraduationCap,
   BookOpen,
   Sparkles,
-  Globe2,
   School,
   CalendarDays,
   Wallet,
