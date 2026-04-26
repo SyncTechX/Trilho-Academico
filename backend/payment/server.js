@@ -10,7 +10,7 @@ const app = express();
 // 🔸 Configuração de CORS
 app.use(cors({
   origin: [
-    "http://localhost:5173",
+    "http://localhost:3000",
     "https://www.trilhoacademico.edu.mz",
     "https://trilhoacademico.edu.mz"
   ],
