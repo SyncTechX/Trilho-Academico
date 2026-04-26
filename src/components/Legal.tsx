@@ -122,10 +122,6 @@ const LegalDocs: React.FC = () => {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
         {/* Hero */}
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white/80 px-4 py-2 text-sm font-medium text-blue-700 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-blue-300">
-            <ShieldCheck className="h-4 w-4" />
-            Informação legal organizada por país
-          </div>
 
           <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
             <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 bg-clip-text text-transparent">
@@ -138,32 +134,6 @@ const LegalDocs: React.FC = () => {
             Consulta requisitos, tipos de visto, passos principais e contactos úteis
             de forma clara, moderna e acessível.
           </p>
-        </div>
-
-        {/* Stats */}
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {countryStats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-3xl border border-gray-200/70 bg-white/85 p-5 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.18)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.04] dark:shadow-[0_20px_60px_-35px_rgba(0,0,0,0.6)]"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {stat.label}
-                  </p>
-                  <p className="mt-2 text-3xl font-black text-gray-900 dark:text-white">
-                    {stat.value}
-                  </p>
-                </div>
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.accent} text-white shadow-lg`}
-                >
-                  {stat.icon}
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* Search */}
