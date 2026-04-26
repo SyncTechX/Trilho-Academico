@@ -16,6 +16,10 @@ import {
   Info,
   Loader2,
   CalendarDays,
+  X,
+  Circle,
+  AlertCircle,
+  ListChecks,
 } from "lucide-react";
 
 const API_URL = "https://trilhoacademico.edu.mz";
@@ -28,7 +32,7 @@ const professors = [
   },
   {
     name: "Alicio Lino",
-    email: "Estudante de Psicologia na USTM",
+    email: "Estudante de Psicologia na UNIAC",
     picture: "/farley.jpg",
   },
 ];
@@ -73,7 +77,6 @@ const chunk = <T,>(arr: T[], size = 3) => {
 const VocationalTestForm: React.FC = () => {
   const navigate = useNavigate();
   const { setVocationalQuizData } = useFormData();
-
   const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -98,6 +101,7 @@ const VocationalTestForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const totalQuestions = QUESTIONS.length;
+  const totalJourneySteps = totalSteps + 1;
 
   const answeredCount = useMemo(() => {
     let count = 0;
@@ -111,10 +115,32 @@ const VocationalTestForm: React.FC = () => {
     return count;
   }, [answers]);
 
+  const currentQuestions = currentStep > 0 ? steps[currentStep - 1] : [];
+
+  const currentStepAnswered = useMemo(() => {
+    if (currentStep === 0) {
+      return [formData.name, formData.dateOfBirth, formData.country, formData.curriculum].filter(Boolean).length;
+    }
+
+    return currentQuestions.filter((q) => {
+      const value = answers[q.id];
+      return Array.isArray(value) ? value.length > 0 : Boolean(value);
+    }).length;
+  }, [answers, currentQuestions, currentStep, formData]);
+
+  const currentStepTotal = currentStep === 0 ? 4 : currentQuestions.length;
+
+  const canContinue = useMemo(() => {
+    if (currentStep === 0) {
+      return Boolean(formData.name && formData.dateOfBirth);
+    }
+
+    return currentStepAnswered === currentStepTotal;
+  }, [currentStep, currentStepAnswered, currentStepTotal, formData]);
+
   const overallProgress = useMemo(() => {
-    if (currentStep === 0) return 8;
-    return Math.round(((currentStep + 1) / (totalSteps + 1)) * 100);
-  }, [currentStep, totalSteps]);
+    return Math.round(((currentStep + 1) / totalJourneySteps) * 100);
+  }, [currentStep, totalJourneySteps]);
 
   const personalCompletion = useMemo(() => {
     const requiredFields = [
@@ -139,18 +165,41 @@ const VocationalTestForm: React.FC = () => {
   const toggleMulti = (id: number, opt: string) => {
     setAnswers((prev) => {
       const arr = Array.isArray(prev[id]) ? [...(prev[id] as string[])] : [];
+
       if (arr.includes(opt)) {
         return { ...prev, [id]: arr.filter((o) => o !== opt) };
       }
+
       if (arr.length >= 3) return prev;
+
       return { ...prev, [id]: [...arr, opt] };
     });
   };
 
+  const goNext = () => {
+    if (!canContinue) return;
+    setCurrentStep((s) => Math.min(s + 1, totalSteps));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goBack = () => {
+    setCurrentStep((s) => Math.max(s - 1, 0));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goToStep = (target: number) => {
+    if (target <= currentStep) {
+      setCurrentStep(target);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
+    if (!canContinue) return;
+
+    setLoading(true);
     setVocationalQuizData({ answers });
 
     try {
@@ -183,14 +232,8 @@ const VocationalTestForm: React.FC = () => {
     }
   };
 
-  const isSelected = (id: number, opt: string) => {
-    const value = answers[id];
-    if (Array.isArray(value)) return value.includes(opt);
-    return value === opt;
-  };
-
   const optionButtonClass = (selected = false) =>
-    `group relative overflow-hidden rounded-2xl border px-4 py-3 text-sm font-semibold transition-all duration-300 ${
+    `group relative overflow-hidden rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition-all duration-300 ${
       selected
         ? "border-transparent bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/20"
         : "border-gray-200 bg-white text-gray-700 hover:border-cyan-200 hover:bg-cyan-50/60 hover:text-cyan-700"
@@ -204,7 +247,6 @@ const VocationalTestForm: React.FC = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-cyan-50 via-white to-indigo-50 px-4 py-8 sm:px-6 lg:px-8">
-      {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-[-120px] top-[-60px] h-80 w-80 rounded-full bg-cyan-200/50 blur-3xl" />
         <div className="absolute right-[-140px] top-1/4 h-96 w-96 rounded-full bg-indigo-200/40 blur-3xl" />
@@ -215,9 +257,8 @@ const VocationalTestForm: React.FC = () => {
         onSubmit={handleSubmit}
         className="mx-auto flex w-full max-w-7xl flex-col gap-6 lg:flex-row"
       >
-        {/* Sidebar */}
-        <aside className={`lg:w-[340px] ${sectionCardClass} p-5 sm:p-6`}>
-          <div className="flex h-full flex-col justify-between gap-6">
+        <aside className={`lg:w-[350px] ${sectionCardClass} p-5 sm:p-6 lg:sticky lg:top-6 lg:h-fit`}>
+          <div className="flex flex-col gap-6">
             <div>
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-lg font-bold text-white shadow-lg">
@@ -229,84 +270,14 @@ const VocationalTestForm: React.FC = () => {
                     Teste Vocacional
                   </h1>
                   <p className="text-sm text-gray-500">
-                    Um passo de cada vez, com mais clareza.
+                    Responde por blocos simples.
                   </p>
                 </div>
               </div>
-
-              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700">
-                <Sparkles className="h-3.5 w-3.5" />
-                Trilho Académico
               </div>
 
-              <div className="mt-6 rounded-3xl border border-gray-200 bg-gray-50/80 p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
-                  Passo atual
-                </p>
-                <h2 className="mt-2 text-lg font-bold text-gray-900">
-                  {stepTitle}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
-                  {currentStep === 0
-                    ? "Começa com os teus dados pessoais antes de iniciares o teste."
-                    : `Perguntas respondidas: ${answeredCount} de ${totalQuestions}.`}
-                </p>
 
-                <div className="mt-5">
-                  <div className="mb-2 flex items-center justify-between text-xs font-semibold text-gray-500">
-                    <span>Progresso</span>
-                    <span>{overallProgress}%</span>
-                  </div>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-gray-200">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 transition-all duration-500"
-                      style={{ width: `${overallProgress}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                <div className="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600">
-                      <User className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">
-                        Perfil
-                      </p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        Informação pessoal
-                      </p>
-                    </div>
-                  </div>
-                  <p className="mt-3 text-sm text-gray-600">
-                    Completo: {personalCompletion}%
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-gray-200 bg-white p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-                      <ShieldCheck className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gray-500">
-                        Estado
-                      </p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        Respostas guardadas
-                      </p>
-                    </div>
-                  </div>
-                  <p className="mt-3 text-sm text-gray-600">
-                    {answeredCount} bloco{answeredCount !== 1 ? "s" : ""} já
-                    respondido{answeredCount !== 1 ? "s" : ""}.
-                  </p>
-                </div>
-              </div>
-            </div>
+            
 
             <div className="rounded-3xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-indigo-50 p-4">
               <div className="flex items-start gap-3">
@@ -318,8 +289,7 @@ const VocationalTestForm: React.FC = () => {
                     Dica importante
                   </p>
                   <p className="mt-1 text-sm leading-6 text-gray-600">
-                    Responde com sinceridade. Quanto mais autênticas forem as tuas
-                    respostas, mais útil será o resultado final.
+                    Responde com sinceridade. O resultado depende da qualidade das tuas respostas.
                   </p>
                 </div>
               </div>
@@ -327,40 +297,40 @@ const VocationalTestForm: React.FC = () => {
           </div>
         </aside>
 
-        {/* Main */}
         <motion.div
           key={currentStep}
-          initial={{ x: 36, opacity: 0 }}
+          initial={{ x: 24, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.35 }}
+          transition={{ duration: 0.3 }}
           className={`flex-1 ${sectionCardClass} p-5 sm:p-7 lg:p-8`}
         >
-          {/* Step 0 */}
+          <div className="mb-6 flex flex-col gap-4 rounded-[1.75rem] border border-gray-200 bg-gray-50/80 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700">
+                <Sparkles className="h-3.5 w-3.5" />
+                {currentStep === 0 ? "Etapa inicial" : "Teste vocacional"}
+              </div>
+              <h2 className="text-2xl font-black text-gray-900 sm:text-3xl">
+                {stepTitle}
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-gray-600">
+                {currentStep === 0
+                  ? "Preenche os teus dados básicos antes de iniciar o teste."
+                  : "Seleciona a resposta que melhor representa o teu perfil."}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-white px-4 py-3 text-sm font-bold text-gray-600 shadow-sm">
+              {currentStep === 0
+                ? `${personalCompletion}% perfil`
+                : `${currentStepAnswered}/${currentStepTotal} neste bloco`}
+            </div>
+          </div>
+
           {currentStep === 0 && (
             <div className="space-y-8">
-              <div className="flex flex-col gap-4 border-b border-gray-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-indigo-700">
-                    <BookOpen className="h-3.5 w-3.5" />
-                    Etapa inicial
-                  </div>
-
-                  <h2 className="flex items-center gap-2 text-2xl font-black text-gray-900 sm:text-3xl">
-                    <User className="h-6 w-6 text-indigo-600" />
-                    Informação Pessoal
-                  </h2>
-                  <p className="mt-2 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base">
-                    Preenche os teus dados básicos antes de avançares para o
-                    teste vocacional.
-                  </p>
-                </div>
-              </div>
-
               <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Nome Completo *
-                  </label>
+                <Field label="Nome Completo *">
                   <input
                     type="text"
                     value={formData.name}
@@ -371,12 +341,9 @@ const VocationalTestForm: React.FC = () => {
                     required
                     className={inputClass}
                   />
-                </div>
+                </Field>
 
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Data de Nascimento *
-                  </label>
+                <Field label="Data de Nascimento *">
                   <div className="relative">
                     <input
                       type="date"
@@ -389,21 +356,15 @@ const VocationalTestForm: React.FC = () => {
                     />
                     <CalendarDays className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   </div>
-                </div>
+                </Field>
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Nível Académico Mais Elevado
-                  </label>
+                <Field label="Nível Académico Mais Elevado">
                   <select
                     value={formData.highestEducation}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        highestEducation: e.target.value,
-                      })
+                      setFormData({ ...formData, highestEducation: e.target.value })
                     }
                     className={inputClass}
                   >
@@ -413,12 +374,9 @@ const VocationalTestForm: React.FC = () => {
                     <option value="mestrado">Mestrado</option>
                     <option value="doutoramento">Doutoramento</option>
                   </select>
-                </div>
+                </Field>
 
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Escola Secundária
-                  </label>
+                <Field label="Escola Secundária">
                   <input
                     type="text"
                     value={formData.highSchool}
@@ -428,14 +386,11 @@ const VocationalTestForm: React.FC = () => {
                     placeholder="Ex: Escola Secundária Josina Machel"
                     className={inputClass}
                   />
-                </div>
+                </Field>
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    País
-                  </label>
+                <Field label="País">
                   <select
                     value={formData.country}
                     onChange={(e) =>
@@ -448,13 +403,10 @@ const VocationalTestForm: React.FC = () => {
                       <option key={c}>{c}</option>
                     ))}
                   </select>
-                </div>
+                </Field>
 
                 {formData.country === "Moçambique" ? (
-                  <div>
-                    <label className="mb-2 block text-sm font-semibold text-gray-700">
-                      Província
-                    </label>
+                  <Field label="Província">
                     <div className="relative">
                       <select
                         value={formData.province}
@@ -470,20 +422,16 @@ const VocationalTestForm: React.FC = () => {
                       </select>
                       <MapPin className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     </div>
-                  </div>
+                  </Field>
                 ) : (
                   <div className="rounded-3xl border border-dashed border-gray-200 bg-gray-50/70 p-4 text-sm leading-6 text-gray-500">
-                    Seleciona <span className="font-semibold">Moçambique</span>{" "}
-                    para escolheres a província.
+                    Seleciona <span className="font-semibold">Moçambique</span> para escolheres a província.
                   </div>
                 )}
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Currículo
-                  </label>
+                <Field label="Currículo">
                   <select
                     value={formData.curriculum}
                     onChange={(e) =>
@@ -498,12 +446,9 @@ const VocationalTestForm: React.FC = () => {
                     <option value="ieb">IEB</option>
                     <option value="outro">Outro</option>
                   </select>
-                </div>
+                </Field>
 
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Média Final
-                  </label>
+                <Field label="Média Final">
                   <input
                     type="text"
                     value={formData.finalAverage}
@@ -519,93 +464,81 @@ const VocationalTestForm: React.FC = () => {
                     }
                     className={inputClass}
                   />
-                </div>
+                </Field>
               </div>
             </div>
           )}
 
-          {/* Quiz steps */}
           {currentStep > 0 && (
             <div className="space-y-6">
-              <div className="border-b border-gray-200 pb-5">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-cyan-700">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Teste vocacional
-                </div>
+              {currentQuestions.map((q, index) => {
+                const value = answers[q.id];
+                const answered = Array.isArray(value) ? value.length > 0 : Boolean(value);
 
-                <h2 className="text-2xl font-black text-gray-900 sm:text-3xl">
-                  {stepTitle}
-                </h2>
-                <p className="mt-2 text-sm leading-7 text-gray-600 sm:text-base">
-                  Responde às perguntas abaixo com honestidade.
-                </p>
-              </div>
+                return (
+                  <div
+                    key={q.id}
+                    className="rounded-[1.75rem] border border-gray-200 bg-white p-5 shadow-sm sm:p-6"
+                  >
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-sm font-bold text-white shadow-sm">
+                          {index + 1}
+                        </div>
+                        <label className="pt-1 text-base font-semibold leading-7 text-gray-800">
+                          {q.text}
+                        </label>
+                      </div>
 
-              {steps[currentStep - 1].map((q, index) => (
-                <div
-                  key={q.id}
-                  className="rounded-[1.75rem] border border-gray-200 bg-white p-5 shadow-sm sm:p-6"
-                >
-                  <div className="mb-4 flex items-start gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-sm font-bold text-white shadow-sm">
-                      {index + 1}
+                      {answered ? (
+                        <CheckCircle2 className="mt-2 h-5 w-5 shrink-0 text-emerald-500" />
+                      ) : (
+                        <Circle className="mt-2 h-5 w-5 shrink-0 text-gray-300" />
+                      )}
                     </div>
-                    <label className="pt-1 text-base font-semibold leading-7 text-gray-800">
-                      {q.text}
-                    </label>
-                  </div>
 
-                  {(q.type === "likert" ||
-                    q.type === "scale" ||
-                    q.type === "single" ||
-                    q.type === "ab") && (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                      {q.options?.map((opt) => (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() => handleAnswer(q.id, opt)}
-                          className={optionButtonClass(answers[q.id] === opt)}
-                        >
-                          <span className="relative z-10">{opt}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {q.type === "multi" && (
-                    <>
-                      <div className="mb-3 text-xs font-medium text-gray-500">
+                    {q.type === "multi" && (
+                      <div className="mb-3 flex items-center gap-2 rounded-2xl bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-700">
+                        <AlertCircle className="h-4 w-4" />
                         Podes selecionar até 3 opções.
                       </div>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                        {q.options?.map((opt) => (
+                    )}
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                      {q.options?.map((opt) => {
+                        const selected =
+                          q.type === "multi"
+                            ? (answers[q.id] as string[]).includes(opt)
+                            : answers[q.id] === opt;
+
+                        return (
                           <button
                             key={opt}
                             type="button"
-                            onClick={() => toggleMulti(q.id, opt)}
-                            className={optionButtonClass(
-                              (answers[q.id] as string[]).includes(opt)
-                            )}
+                            onClick={() =>
+                              q.type === "multi"
+                                ? toggleMulti(q.id, opt)
+                                : handleAnswer(q.id, opt)
+                            }
+                            className={optionButtonClass(selected)}
                           >
                             <span className="relative z-10">{opt}</span>
                           </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
 
-          {/* Navigation */}
           <div className="mt-8 flex flex-col gap-3 border-t border-gray-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
               {currentStep > 0 && (
                 <button
                   type="button"
-                  onClick={() => setCurrentStep((s) => s - 1)}
+                  onClick={goBack}
                   className="inline-flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -614,12 +547,25 @@ const VocationalTestForm: React.FC = () => {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col gap-2 sm:items-end">
+              {!canContinue && (
+                <p className="text-xs font-semibold text-amber-600">
+                  {currentStep === 0
+                    ? "Preenche nome e data de nascimento para continuar."
+                    : "Responde todas as perguntas deste bloco para avançar."}
+                </p>
+              )}
+
               {currentStep < totalSteps ? (
                 <button
                   type="button"
-                  onClick={() => setCurrentStep((s) => s + 1)}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+                  onClick={goNext}
+                  disabled={!canContinue}
+                  className={`inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all ${
+                    canContinue
+                      ? "bg-gradient-to-r from-cyan-500 to-indigo-600 hover:-translate-y-0.5 hover:shadow-xl"
+                      : "cursor-not-allowed bg-gray-300"
+                  }`}
                 >
                   {currentStep === 0 ? "Começar Teste" : "Próximo"}
                   <ChevronRight className="h-4 w-4" />
@@ -627,9 +573,9 @@ const VocationalTestForm: React.FC = () => {
               ) : (
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !canContinue}
                   className={`inline-flex min-w-[170px] items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all ${
-                    loading
+                    loading || !canContinue
                       ? "cursor-not-allowed bg-gray-400"
                       : "bg-gradient-to-r from-emerald-500 to-teal-500 hover:-translate-y-0.5 hover:shadow-xl"
                   }`}
@@ -652,87 +598,94 @@ const VocationalTestForm: React.FC = () => {
         </motion.div>
       </form>
 
-      {/* Floating info button */}
-      <div className="relative">
-        <button
-          onClick={() => setShowModal(true)}
-          className="fixed bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-2xl transition-transform hover:scale-105"
-          aria-label="Abrir informações"
-        >
-          <Info className="h-6 w-6" />
-        </button>
+      <button
+        onClick={() => setShowModal(true)}
+        className="fixed bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-2xl transition-transform hover:scale-105"
+        aria-label="Abrir informações"
+      >
+        <Info className="h-6 w-6" />
+      </button>
 
-        <AnimatePresence>
-          {showModal && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.45 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setShowModal(false)}
-                className="fixed inset-0 z-40 bg-black"
-              />
-              <motion.div
-                initial={{ scale: 0.92, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.92, opacity: 0, y: 20 }}
-                transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4"
-              >
-                <div className="relative w-full max-w-xl rounded-[2rem] border border-gray-200 bg-white p-6 shadow-2xl sm:p-8">
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="absolute right-4 top-4 rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-                  >
-                    ×
-                  </button>
+      <AnimatePresence>
+        {showModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.45 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowModal(false)}
+              className="fixed inset-0 z-40 bg-black"
+            />
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 20 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
+              <div className="relative w-full max-w-xl rounded-[2rem] border border-gray-200 bg-white p-6 shadow-2xl sm:p-8">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="absolute right-4 top-4 rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+                >
+                  <X className="h-5 w-5" />
+                </button>
 
-                  <div className="mb-6">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-indigo-700">
-                      <ShieldCheck className="h-3.5 w-3.5" />
-                      Responsáveis
-                    </div>
-                    <h2 className="text-2xl font-black text-gray-900">
-                      Equipa de Apoio
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-gray-600">
-                      Estes são os responsáveis ligados ao acompanhamento deste
-                      processo.
-                    </p>
+                <div className="mb-6">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-indigo-700">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Responsáveis
                   </div>
-
-                  <div className="space-y-4">
-                    {professors.map((p) => (
-                      <div
-                        key={p.name}
-                        className="flex items-center gap-4 rounded-3xl border border-gray-200 bg-gray-50/80 p-4 transition hover:shadow-md"
-                      >
-                        <img
-                          src={p.picture}
-                          alt={p.name}
-                          className="h-14 w-14 rounded-full object-cover"
-                        />
-                        <div>
-                          <p className="font-semibold text-gray-900">{p.name}</p>
-                          <p className="text-sm text-gray-600">{p.email}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-6 rounded-3xl bg-gray-50/80 p-4 text-center">
-                    <p className="text-sm leading-6 text-gray-500">
-                      Em caso de dúvidas, contacta a equipa do Trilho Académico.
-                    </p>
-                  </div>
+                  <h2 className="text-2xl font-black text-gray-900">
+                    Equipa de Apoio
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                    Estes são os responsáveis ligados ao acompanhamento deste processo.
+                  </p>
                 </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </div>
+
+                <div className="space-y-4">
+                  {professors.map((p) => (
+                    <div
+                      key={p.name}
+                      className="flex items-center gap-4 rounded-3xl border border-gray-200 bg-gray-50/80 p-4 transition hover:shadow-md"
+                    >
+                      <img
+                        src={p.picture}
+                        alt={p.name}
+                        className="h-14 w-14 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="font-semibold text-gray-900">{p.name}</p>
+                        <p className="text-sm text-gray-600">{p.email}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-semibold text-gray-700">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
 
 export default VocationalTestForm;
