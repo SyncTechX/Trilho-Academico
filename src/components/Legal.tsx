@@ -1,20 +1,17 @@
 import React, { useMemo, useState } from "react";
 import countriesLegal from "../data/countriesLegal.json";
+import { generateVisaPDF } from "../utils/pdfGenerator";
 import {
   X,
   Mail,
   Phone,
-  Globe,
   Instagram,
   MessageSquare,
   FileDown,
   ArrowRightCircle,
   Search,
   ChevronRight,
-  ShieldCheck,
   FileText,
-  MapPin,
-  Sparkles,
   ExternalLink,
 } from "lucide-react";
 
@@ -79,35 +76,11 @@ const LegalDocs: React.FC = () => {
   const openContactModal = (country: Country) => setContactModalOpen(country);
   const closeContactModal = () => setContactModalOpen(null);
 
-  const totalVisaTypes = useMemo(() => {
-    return (countriesLegal as Country[]).reduce((acc, country) => {
-      const count = Object.keys(country.visaInfo || {}).filter(
-        (key) => key !== "rules"
-      ).length;
-      return acc + count;
-    }, 0);
-  }, []);
-
-  const countryStats = [
-    {
-      label: "Países",
-      value: (countriesLegal as Country[]).length,
-      icon: <MapPin className="h-5 w-5" />,
-      accent: "from-blue-600 to-cyan-500",
-    },
-    {
-      label: "Tipos de visto",
-      value: totalVisaTypes,
-      icon: <FileText className="h-5 w-5" />,
-      accent: "from-violet-600 to-indigo-500",
-    },
-    {
-      label: "Guias disponíveis",
-      value: filteredCountries.length,
-      icon: <Sparkles className="h-5 w-5" />,
-      accent: "from-emerald-500 to-green-500",
-    },
-  ];
+  const handleDownloadPDF = () => {
+    if (selectedVisa) {
+      generateVisaPDF(selectedVisa);
+    }
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-950 dark:text-white">
@@ -441,17 +414,13 @@ const LegalDocs: React.FC = () => {
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-3">
-                    {selectedVisa.pdfLink && (
-                      <a
-                        href={selectedVisa.pdfLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.02]"
-                      >
-                        <FileDown className="h-4 w-4" />
-                        PDF
-                      </a>
-                    )}
+                    <button
+                      onClick={handleDownloadPDF}
+                      className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-[1.02]"
+                    >
+                      <FileDown className="h-4 w-4" />
+                      Descarregar PDF
+                    </button>
 
                     {selectedVisa.officialWebsite && (
                       <a
