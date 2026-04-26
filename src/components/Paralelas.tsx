@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useJsApiLoader } from "@react-google-maps/api";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { accommodations } from "../data/accommodations";
 import { activities } from "../data/activities";
 import {
@@ -25,62 +24,69 @@ import {
   Loader2,
 } from "lucide-react";
 
-const API_URL = "http://localhost:5001"; //http://localhost:3000
+const API_URL = "http://localhost:5001";
 
-const AccommodationExplorer: React.FC = () => {
+interface Item {
+  id: string;
+  nome: string;
+  descricao?: string;
+  pais?: string;
+  universidade?: string;
+  tipo?: string;
+  preco?: number | null;
+  imagem?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+}
+
+// Icon mapping for activities
+const ACTIVITY_ICONS: Record<string, React.ReactNode> = {
+  Desporto: <FaRunning className="text-green-500" />,
+  Café: <FaCoffee className="text-orange-500" />,
+  Ginásio: <FaBed className="text-purple-500" />,
+  Igreja: <FaChurch className="text-indigo-500" />,
+  Cinema: <FaFilm className="text-red-500" />,
+  Shopping: <FaShoppingBag className="text-pink-500" />,
+  Museu: <FaLandmark className="text-yellow-500" />,
+};
+
+const Paralelas: React.FC = () => {
   const [paisSelecionado, setPaisSelecionado] = useState("");
   const [universidadeSelecionada, setUniversidadeSelecionada] = useState("");
   const [tipoAtividadeSelecionada, setTipoAtividadeSelecionada] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"Acomodações" | "Atividades">(
     "Acomodações"
   );
-  const [mapViewOnly] = useState(false);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey:
-      import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "YOUR_GOOGLE_MAPS_KEY",
-  });
-
-  const [userLocation, setUserLocation] = useState({
-    lat: -33.9249,
-    lng: 18.4241,
-  });
-
+  // Debounce search query for better performance
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) =>
-          setUserLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          }),
-        () => console.warn("Geolocation not available or denied")
-      );
-    }
-  }, []);
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const filteredAccommodations = useMemo(
     () =>
       accommodations.filter(
         (acc) =>
-          acc.nome.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          acc.nome.toLowerCase().includes(debouncedQuery.toLowerCase()) &&
           (!paisSelecionado || acc.pais === paisSelecionado) &&
           (!universidadeSelecionada ||
             acc.universidade === universidadeSelecionada)
       ),
-    [searchQuery, paisSelecionado, universidadeSelecionada]
+    [debouncedQuery, paisSelecionado, universidadeSelecionada]
   );
 
   const filteredActivities = useMemo(
     () =>
       activities.filter(
         (act) =>
-          act.nome.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          act.nome.toLowerCase().includes(debouncedQuery.toLowerCase()) &&
           (!paisSelecionado || act.pais === paisSelecionado) &&
           (!tipoAtividadeSelecionada || act.tipo === tipoAtividadeSelecionada)
       ),
-    [searchQuery, paisSelecionado, tipoAtividadeSelecionada]
+    [debouncedQuery, paisSelecionado, tipoAtividadeSelecionada]
   );
 
   const [externalItems, setExternalItems] = useState<any[] | null>(null);
@@ -88,32 +94,16 @@ const AccommodationExplorer: React.FC = () => {
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiPage, setAiPage] = useState(1);
 
-  const itemsToDisplay =
+  const itemsToDisplay: Item[] =
     externalItems ??
     (activeTab === "Acomodações"
       ? filteredAccommodations
       : filteredActivities);
 
-  const getIcon = (tipo: string) => {
-    switch (tipo) {
-      case "Desporto":
-        return <FaRunning className="text-green-500" />;
-      case "Café":
-        return <FaCoffee className="text-orange-500" />;
-      case "Ginásio":
-        return <FaBed className="text-purple-500" />;
-      case "Igreja":
-        return <FaChurch className="text-indigo-500" />;
-      case "Cinema":
-        return <FaFilm className="text-red-500" />;
-      case "Shopping":
-        return <FaShoppingBag className="text-pink-500" />;
-      case "Museu":
-        return <FaLandmark className="text-yellow-500" />;
-      default:
-        return <FaMapMarkerAlt className="text-blue-500" />;
-    }
-  };
+  const getIcon = useCallback(
+    (tipo: string) => ACTIVITY_ICONS[tipo] || <FaMapMarkerAlt className="text-blue-500" />,
+    []
+  );
 
   async function handleAISearch(loadMore = false) {
     if (!searchQuery.trim()) return;
@@ -136,7 +126,7 @@ const AccommodationExplorer: React.FC = () => {
 
       const data = await resp.json();
 
-      const items = (data.items || []).map((it: any, idx: number) => ({
+      const items: Item[] = (data.items || []).map((it: any, idx: number) => ({
         id: it.id || `external-${idx}`,
         nome: it.nome || "Sem nome",
         descricao: it.descricao || "",
@@ -149,14 +139,14 @@ const AccommodationExplorer: React.FC = () => {
           typeof it.lat === "number"
             ? it.lat
             : it.lat
-            ? Number(it.lat)
-            : null,
+              ? Number(it.lat)
+              : null,
         lng:
           typeof it.lng === "number"
             ? it.lng
             : it.lng
-            ? Number(it.lng)
-            : null,
+              ? Number(it.lng)
+              : null,
       }));
 
       setExternalItems(loadMore ? [...(externalItems || []), ...items] : items);
@@ -212,8 +202,6 @@ const AccommodationExplorer: React.FC = () => {
     ),
   ];
 
-  const resultsCount = itemsToDisplay.length;
-
   const LoadingScreen = () => (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/85 backdrop-blur-md">
       <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-2xl">
@@ -243,11 +231,6 @@ const AccommodationExplorer: React.FC = () => {
         <div className="mb-8 overflow-hidden rounded-[2rem] border border-gray-200/70 bg-white/90 p-6 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:p-8 lg:p-10">
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-100 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-700">
-                <Sparkles className="h-4 w-4" />
-                Exploração inteligente
-              </div>
-
               <h1 className="text-3xl font-black leading-tight text-gray-900 sm:text-4xl lg:text-5xl">
                 Explorar{" "}
                 <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
@@ -259,20 +242,6 @@ const AccommodationExplorer: React.FC = () => {
                 Descobre acomodações e atividades alinhadas com os teus
                 interesses, com filtros locais ou pesquisa inteligente por IA.
               </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <div className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
-                  {resultsCount} resultado{resultsCount !== 1 ? "s" : ""}
-                </div>
-                <div className="rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">
-                  {activeTab}
-                </div>
-                {externalItems && (
-                  <div className="rounded-full bg-purple-50 px-4 py-2 text-sm font-medium text-purple-700">
-                    Fonte: IA
-                  </div>
-                )}
-              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -441,11 +410,10 @@ const AccommodationExplorer: React.FC = () => {
                   setAiPage(1);
                   setAiError(null);
                 }}
-                className={`rounded-full px-5 py-3 text-sm font-semibold transition-all duration-300 ${
-                  activeTab === tab
+                className={`rounded-full px-5 py-3 text-sm font-semibold transition-all duration-300 ${activeTab === tab
                     ? "bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-md"
                     : "text-gray-700 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -454,101 +422,93 @@ const AccommodationExplorer: React.FC = () => {
         </div>
 
         {/* RESULTS */}
-        {!mapViewOnly ? (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {itemsToDisplay.length === 0 ? (
-              <div className="col-span-full rounded-[2rem] border border-dashed border-gray-300 bg-white/80 px-6 py-16 text-center shadow-sm">
-                <FaMapMarkerAlt className="mx-auto mb-4 text-6xl text-gray-300" />
-                <h3 className="text-xl font-bold text-gray-900">
-                  Nenhum resultado encontrado
-                </h3>
-                <p className="mx-auto mt-3 max-w-xl text-gray-500 text-base leading-7">
-                  Tenta outros filtros, muda o separador atual ou faz uma
-                  pesquisa com IA para obter sugestões mais amplas.
-                </p>
-              </div>
-            ) : (
-              itemsToDisplay.map((item: any) => (
-                <div
-                  key={item.id}
-                  className="group overflow-hidden rounded-[2rem] border border-gray-200/70 bg-white/95 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_-35px_rgba(0,0,0,0.22)]"
-                >
-                  <div className="flex h-full flex-col">
-                    {activeTab === "Atividades" && item.imagem && (
-                      <div className="relative overflow-hidden">
-                        <img
-                          src={item.imagem || "/placeholder.png"}
-                          alt={item.nome}
-                          className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {itemsToDisplay.length === 0 ? (
+            <div className="col-span-full rounded-[2rem] border border-dashed border-gray-300 bg-white/80 px-6 py-16 text-center shadow-sm">
+              <FaMapMarkerAlt className="mx-auto mb-4 text-6xl text-gray-300" />
+              <h3 className="text-xl font-bold text-gray-900">
+                Nenhum resultado encontrado
+              </h3>
+              <p className="mx-auto mt-3 max-w-xl text-gray-500 text-base leading-7">
+                Tenta outros filtros, muda o separador atual ou faz uma
+                pesquisa com IA para obter sugestões mais amplas.
+              </p>
+            </div>
+          ) : (
+            itemsToDisplay.map((item: any) => (
+              <div
+                key={item.id}
+                className="group overflow-hidden rounded-[2rem] border border-gray-200/70 bg-white/95 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.16)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_-35px_rgba(0,0,0,0.22)]"
+              >
+                <div className="flex h-full flex-col">
+                  {activeTab === "Atividades" && item.imagem && (
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={item.imagem || "/placeholder.png"}
+                        alt={item.nome}
+                        className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                    </div>
+                  )}
+
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
+                      {activeTab === "Atividades" ? (
+                        <>
+                          {getIcon(item.tipo)}
+                          <span>{item.tipo || "Atividade"}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Building2 className="h-4 w-4 text-indigo-500" />
+                          <span>{item.universidade || "Universidade"}</span>
+                        </>
+                      )}
+                    </div>
+
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {item.nome}
+                    </h3>
+
+                    {item.pais && (
+                      <div className="mt-2 inline-flex items-center gap-2 text-sm text-gray-500">
+                        <FaMapMarkerAlt className="text-blue-500" />
+                        <span>{item.pais}</span>
                       </div>
                     )}
 
-                    <div className="flex flex-1 flex-col p-6">
-                      <div className="mb-3 flex items-center gap-2 text-sm font-medium text-gray-500">
-                        {activeTab === "Atividades" ? (
-                          <>
-                            {getIcon(item.tipo)}
-                            <span>{item.tipo || "Atividade"}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Building2 className="h-4 w-4 text-indigo-500" />
-                            <span>{item.universidade || "Universidade"}</span>
-                          </>
-                        )}
+                    <p className="mt-4 line-clamp-4 text-sm leading-7 text-gray-600">
+                      {item.descricao || "Sem descrição disponível."}
+                    </p>
+
+                    <div className="mt-6 flex items-center justify-between gap-3">
+                      <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700">
+                        {externalItems ? "Resultado IA" : "Resultado local"}
                       </div>
 
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {item.nome}
-                      </h3>
-
-                      {item.pais && (
-                        <div className="mt-2 inline-flex items-center gap-2 text-sm text-gray-500">
-                          <FaMapMarkerAlt className="text-blue-500" />
-                          <span>{item.pais}</span>
-                        </div>
-                      )}
-
-                      <p className="mt-4 line-clamp-4 text-sm leading-7 text-gray-600">
-                        {item.descricao || "Sem descrição disponível."}
-                      </p>
-
-                      <div className="mt-6 flex items-center justify-between gap-3">
-                        <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700">
-                          {externalItems ? "Resultado IA" : "Resultado local"}
-                        </div>
-
-                        <button
-                          onClick={() =>
-                            window.open(
-                              `https://www.google.com/search?q=${encodeURIComponent(
-                                item.nome + " " + item.pais
-                              )}`,
-                              "_blank"
-                            )
-                          }
-                          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition hover:scale-[1.02]"
-                        >
-                          Ver mais
-                          <ArrowRight className="h-4 w-4" />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() =>
+                          window.open(
+                            `https://www.google.com/search?q=${encodeURIComponent(
+                              item.nome + " " + item.pais
+                            )}`,
+                            "_blank"
+                          )
+                        }
+                        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition hover:scale-[1.02]"
+                      >
+                        Ver mais
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        ) : (
-          isLoaded && (
-            <div className="mt-4 overflow-hidden rounded-3xl border border-gray-200 shadow-xl">
-              {/* Map placeholder area if re-enabled later */}
-            </div>
-          )
-        )}
+              </div>
+            ))
+          )}
+        </div>
 
         {/* LOAD MORE */}
         {externalItems && externalItems.length > 0 && (
@@ -568,4 +528,4 @@ const AccommodationExplorer: React.FC = () => {
   );
 };
 
-export default AccommodationExplorer;
+export default Paralelas;
