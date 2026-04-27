@@ -57,7 +57,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
   const features = [
     {
-      img: <img src="/public/cards/course.png" alt="" />,
+      img: <img src="/cards/course.png" alt="" />,
       title: "Seleciona o Curso Perfeito",
       description:
         "Ao completar o nosso teste vocacional, recebe sugestões de cursos que melhor se alinham consigo, com a sua personalidade e interesses.",
@@ -66,7 +66,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       badge: "Educação",
     },
     {
-      img: <img src="/public/cards/world.png" alt="" />,
+      img: <img src="/cards/world.png" alt="" />,
       title: "Escolhe o País Ideal",
       description:
         "Com a nossa inteligência artificial, descobre qual o país (incluindo Moçambique), cidade e região que melhor se adapta aos teus sonhos e possibilidades.",
@@ -75,7 +75,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       badge: "AI",
     },
     {
-      img: <img src="/public/cards/documents.png" alt="" />,
+      img: <img src="/cards/documents.png" alt="" />,
       title: "Documentação e Vistos",
       description:
         "Recebe orientações passo a passo para preparar toda a documentação necessária, incluindo vistos de estudante.",
@@ -84,7 +84,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       badge: "Guias",
     },
     {
-      img: <img src="/public/cards/financas.png" alt="" />,
+      img: <img src="/cards/financas.png" alt="" />,
       title: "Planeamento Financeiro",
       description:
         "Calcula custos de vida, propinas e encontra bolsas de estudo e oportunidades de financiamento para identificar o melhor plano para si.",
@@ -93,7 +93,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       badge: "Finanças",
     },
     {
-      img: <img src="/public/cards/comunity.png" alt="" />,
+      img: <img src="/cards/comunity.png" alt="" />,
       title: "Comunidade de Estudantes",
       description:
         "Liga-te a outros estudantes moçambicanos que já estão a estudar no estrangeiro e aprende com a experiência deles.",
@@ -102,7 +102,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       badge: "Rede",
     },
     {
-      img: <img src="/public/cards/suport.png" alt="" />,
+      img: <img src="/cards/suport.png" alt="" />,
       title: "Suporte Personalizado",
       description:
         "Aproveite o apoio das comunidades e associações de estudantes em diferentes países, que querem orientar-te em todas as etapas.",
@@ -230,7 +230,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           </div>
           <div className=" hidden md:block">
 
-            <img src="/public/logo-oficial.png" alt="hero logo" width={349} className="hidden md:block" />
+            <img src="/logo-oficial.png" alt="hero logo" width={349} className="hidden md:block" />
           </div>
         </div>
       </div>

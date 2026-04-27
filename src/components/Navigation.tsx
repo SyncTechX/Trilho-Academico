@@ -1,6 +1,6 @@
-import {useState, useRef} from "react"; //useffect
-import {Link, useLocation} from "react-router-dom";
-import {useTheme} from "../contexts/ThemeContext";
+import { useState, useRef } from "react"; //useffect
+import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   Menu,
   X,
@@ -11,18 +11,18 @@ import {
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const {theme, toggleTheme} = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const location = useLocation();
 
   const navItems = [
-    {path: "/", label: "Início"},
-    {path: "/escolher-teste", label: "Orientação"},
-    {path: "/Paralelas", label: "Acomodação"},
-    {path: "/legal", label: "Requisitos"},
-    {path: "/recursos", label: "Bolsas de Estudo"},
-    {path: "/contact", label: "Contacto"},
+    { path: "/", label: "Início" },
+    { path: "/escolher-teste", label: "Orientação" },
+    { path: "/Paralelas", label: "Acomodação" },
+    { path: "/legal", label: "Requisitos" },
+    { path: "/recursos", label: "Bolsas de Estudo" },
+    { path: "/contact", label: "Contacto" },
   ];
 
   return (
@@ -37,7 +37,7 @@ const Navigation = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3">
               <div className="relative">
-                <img src="/public/logo-oficial.png" alt="logo" width={35} />
+                <img src="/logo-oficial.png" alt="logo" width={35} />
               </div>
               <div>
                 <span className="text-xl font-bold text-blue-600">
@@ -51,15 +51,14 @@ const Navigation = () => {
 
             {/* Desktop Nav */}
             <div className="hidden lg:flex items-center space-x-1">
-              {navItems.map(({path, label}) => (
+              {navItems.map(({ path, label }) => (
                 <Link
                   key={path}
                   to={path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    location.pathname === path
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${location.pathname === path
                       ? "text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-blue-500/25"
                       : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                    }`}
                 >
                   <span className="hidden xl:block">{label}</span>
                 </Link>
@@ -95,15 +94,14 @@ const Navigation = () => {
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
             <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-              {navItems.map(({path, label}) => (
+              {navItems.map(({ path, label }) => (
                 <Link
                   key={path}
                   to={path}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium ${
-                    location.pathname === path
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium ${location.pathname === path
                       ? "text-white bg-gradient-to-r from-cyan-500 to-blue-600"
                       : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400"
-                  }`}
+                    }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <span>{label}</span>
