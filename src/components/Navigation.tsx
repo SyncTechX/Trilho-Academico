@@ -1,183 +1,129 @@
-import { useState, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {useState, useRef} from "react"; //useffect
+import {Link, useLocation} from "react-router-dom";
+import {useTheme} from "../contexts/ThemeContext";
 import {
-  Home,
-  Compass,
-  Brain,
-  BookOpen,
-  FileText,
   Menu,
   X,
-  Zap,
-  Contact,
-  ChevronRight,
+  Moon,
+  Sun,
+
 } from "lucide-react";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const {theme, toggleTheme} = useTheme();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const location = useLocation();
 
   const navItems = [
-    { path: "/", label: "Início", icon: Home },
-    { path: "/escolher-teste", label: "Explorar", icon: Compass },
-    { path: "/Paralelas", label: "Paralelas", icon: Brain },
-    { path: "/legal", label: "Documentação Legal", icon: FileText },
-    { path: "/recursos", label: "Recursos", icon: BookOpen },
-    { path: "/contact", label: "Contacto", icon: Contact },
+    {path: "/", label: "Início"},
+    {path: "/escolher-teste", label: "Orientação"},
+    {path: "/Paralelas", label: "Acomodação"},
+    {path: "/legal", label: "Requisitos"},
+    {path: "/recursos", label: "Bolsas de Estudo"},
+    {path: "/contact", label: "Contacto"},
   ];
-
-  const isActive = (path: string) => location.pathname === path;
 
   return (
     <>
       <audio ref={audioRef} src="/helio.mp3" loop />
 
-      <nav className="sticky top-0 z-50 border-b border-gray-200/70 bg-white/85 backdrop-blur-xl shadow-[0_10px_40px_-20px_rgba(0,0,0,0.18)]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-18 items-center justify-between py-3">
+      {/* NAVBAR */}
+      <nav className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
+        {/* Main Navigation Bar */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link
-              to="/"
-              className="group flex min-w-0 items-center gap-3"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <div className="relative shrink-0">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 shadow-lg shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-green-400 ring-2 ring-white" />
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="relative">
+                <img src="/public/logo-oficial.png" alt="logo" width={35} />
               </div>
-
-              <div className="min-w-0">
-                <div className="truncate bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 bg-clip-text text-lg font-black text-transparent sm:text-xl">
+              <div>
+                <span className="text-xl font-bold text-blue-600">
                   Trilho Académico
-                </div>
-                <div className="truncate text-[11px] font-medium tracking-wide text-gray-500 sm:text-xs">
-                  From Moz to the World
+                </span>
+                <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  De moçambique para o mundo
                 </div>
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden items-center gap-2 lg:flex">
-              <div className="flex items-center gap-1 rounded-2xl border border-gray-200/70 bg-white/80 p-1.5 shadow-sm">
-                {navItems.map(({ path, label, icon: Icon }) => (
-                  <Link
-                    key={path}
-                    to={path}
-                    className={`group relative inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
-                      isActive(path)
-                        ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-blue-500/20"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-blue-600"
-                    }`}
-                  >
-                    <Icon
-                      className={`h-4 w-4 transition-transform duration-300 ${
-                        isActive(path) ? "" : "group-hover:scale-110"
-                      }`}
-                    />
-                    <span className="hidden xl:inline">{label}</span>
-                  </Link>
-                ))}
-              </div>
+            {/* Desktop Nav */}
+            <div className="hidden lg:flex items-center space-x-1">
+              {navItems.map(({path, label}) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    location.pathname === path
+                      ? "text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-blue-500/25"
+                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  <span className="hidden xl:block">{label}</span>
+                </Link>
+              ))}
             </div>
 
-            {/* Mobile button */}
-            <div className="flex items-center lg:hidden">
+            {/* Theme + Mobile Menu */}
+            <div className="flex items-center space-x-4">
               <button
-                onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white text-gray-700 shadow-sm transition-all duration-300 hover:border-cyan-200 hover:text-cyan-600 hover:shadow-md"
-                aria-label="Abrir menu"
+                onClick={toggleTheme}
+                className="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+              >
+                {theme === "light" ? (
+                  <Moon className="w-5 h-5" />
+                ) : (
+                  <Sun className="w-5 h-5" />
+                )}
+              </button>
+
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-5 w-5" />
+                  <X className="w-6 h-6" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu className="w-6 h-6" />
                 )}
               </button>
             </div>
           </div>
 
           {/* Mobile Menu */}
-          <div
-            className={`overflow-hidden transition-all duration-300 lg:hidden ${
-              isMobileMenuOpen ? "max-h-[520px] pb-4" : "max-h-0"
-            }`}
-          >
-            <div className="mt-2 rounded-[2rem] border border-gray-200 bg-white p-3 shadow-xl">
-              <div className="mb-3 px-2 pt-1">
-                <p className="text-sm font-bold text-gray-900">Navegação</p>
-                <p className="text-xs text-gray-500">
-                  Acede rapidamente às principais áreas da plataforma
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                {navItems.map(({ path, label, icon: Icon }) => (
-                  <Link
-                    key={path}
-                    to={path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`group flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all duration-300 ${
-                      isActive(path)
-                        ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                          isActive(path)
-                            ? "bg-white/15"
-                            : "bg-gray-100 text-gray-600 group-hover:bg-cyan-50 group-hover:text-cyan-600"
-                        }`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <span className="text-sm font-semibold">{label}</span>
-                    </div>
-
-                    <ChevronRight
-                      className={`h-4 w-4 transition-transform duration-300 ${
-                        isActive(path) ? "text-white" : "text-gray-400 group-hover:translate-x-0.5"
-                      }`}
-                    />
-                  </Link>
-                ))}
-              </div>
+          {isMobileMenuOpen && (
+            <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+              {navItems.map(({path, label}) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium ${
+                    location.pathname === path
+                      ? "text-white bg-gradient-to-r from-cyan-500 to-blue-600"
+                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span>{label}</span>
+                </Link>
+              ))}
             </div>
-          </div>
+          )}
         </div>
       </nav>
 
-      {/* Donation Modal */}
+      {/* Donation Modal (now below navbar) */}
       {isModalOpen && (
-        <div className="w-full border-t border-gray-200 bg-gray-100 py-10">
-          <div className="mx-auto w-11/12 overflow-hidden rounded-3xl bg-white shadow-2xl md:w-3/4 lg:w-2/3">
-            <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
-              <div>
-                <h3 className="text-base font-bold text-gray-900">Doação Trilho Académico</h3>
-                <p className="text-sm text-gray-500">
-                  Apoia a continuidade e crescimento da plataforma
-                </p>
-              </div>
-
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="rounded-xl p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <iframe
-              src="https://refres.co/trilho.academico"
-              className="h-[600px] w-full"
-              frameBorder="0"
-              title="Doação Trilho Académico"
-            />
+        <div className="w-full flex justify-center bg-gray-100 dark:bg-gray-900 py-10 border-t border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 w-11/12 md:w-3/4 lg:w-2/3 rounded-2xl shadow-lg relative overflow-hidden">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white z-50"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
         </div>
       )}
