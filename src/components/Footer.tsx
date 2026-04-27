@@ -1,19 +1,15 @@
 import React from "react";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Zap } from "lucide-react";
-import { NavigationPage } from "../types";
+import { Link } from "react-router-dom";
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
-interface FooterProps {
-  onPageChange: (page: NavigationPage) => void;
-}
-
-const Footer: React.FC<FooterProps> = ({ onPageChange }) => {
+const Footer: React.FC = () => {
   const quickLinks = [
-    { id: "Home" as NavigationPage, label: "Início" },
-    { id: "Discovery" as NavigationPage, label: "Explorar" },
-    { id: "Quiz" as NavigationPage, label: "Paralelas" },
-    { id: "Legal" as NavigationPage, label: "Documentação Legal" },
-    { id: "Recursos" as NavigationPage, label: "Recursos" },
-    { id: 'Contacto' as NavigationPage, label: 'Contacto' },
+    { path: "/", label: "Início" },
+    { path: "/escolher-teste", label: "Explorar" },
+    { path: "/paralelas", label: "Paralelas" },
+    { path: "/legal", label: "Documentação Legal" },
+    { path: "/recursos", label: "Recursos" },
+    { path: "/contact", label: "Contacto" },
   ];
 
   return (
@@ -23,10 +19,7 @@ const Footer: React.FC<FooterProps> = ({ onPageChange }) => {
           <div>
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <img src="/logo-oficial.png" alt="logo" width={40} />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Trilho Académico
@@ -46,13 +39,13 @@ const Footer: React.FC<FooterProps> = ({ onPageChange }) => {
             <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Navegação Rápida</h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
-                <li key={link.id}>
-                  <button
-                    onClick={() => onPageChange(link.id)}
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
                     className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors text-sm"
                   >
                     {link.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
